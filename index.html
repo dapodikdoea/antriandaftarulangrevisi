@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Ulang PPDB - SMPN 2 Cibinong</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 font-sans min-h-screen pb-12">
+
+  <header class="bg-blue-700 text-white shadow-md py-6 px-4 text-center">
+    <h1 class="text-2xl md:text-3xl font-bold tracking-wide">SISTEM ANTRIAN ONLINE DAFTAR ULANG</h1>
+    <p class="text-sm md:text-base opacity-90 mt-1">SMP NEGERI 2 CIBINONG</p>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 mt-8">
+    <div id="form-container" class="bg-white p-6 md:p-8 rounded-2xl shadow-md border border-slate-200">
+      <h2 class="text-2xl font-bold text-slate-800 mb-2">Formulir Ambil Nomor Antrian</h2>
+      <p class="text-sm text-slate-500 mb-6">Silakan isi data calon siswa dengan benar sesuai dokumen resmi.</p>
+      
+      <form id="queue-form" class="space-y-5">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Jalur PPDB yang Dituju</label>
+          <select id="input-jalur" class="w-full border-2 border-slate-200 rounded-xl p-3 bg-slate-50 font-medium focus:border-blue-500 focus:bg-white outline-none transition" required>
+            <option value="" disabled selected>-- Pilih Jalur Pendaftaran --</option>
+            <option value="DOM">Jalur Domisili</option>
+            <option value="RAPORT">Jalur Prestasi Nilai Rapor</option>
+            <option value="AFIRMASI">Jalur Afirmasi</option>
+            <option value="KEJUARAAN">Jalur Prestasi Kejuaraan</option>
+            <option value="MUTASI">Jalur Mutasi</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="md:col-span-1">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">NISN Siswa</label>
+            <input type="text" id="input-nisn" maxlength="10" pattern="\d{10}" class="w-full border-2 border-slate-200 rounded-xl p-3 focus:border-blue-500 outline-none transition" placeholder="0098765432" required>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+            <input type="text" id="input-nama" class="w-full border-2 border-slate-200 rounded-xl p-3 focus:border-blue-500 outline-none transition" placeholder="Sesuai ijazah" required>
+          </div>
+          <div class="md:col-span-1">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">L/P</label>
+            <select id="input-jk" class="w-full border-2 border-slate-200 rounded-xl p-3 bg-slate-50 font-medium focus:border-blue-500 focus:bg-white outline-none transition" required>
+              <option value="" disabled selected>Pilih</option>
+              <option value="L">L (Laki-laki)</option>
+              <option value="P">P (Perempuan)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="md:col-span-2">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Sekolah Asal (SD/MI)</label>
+            <input type="text" id="input-asal" class="w-full border-2 border-slate-200 rounded-xl p-3 focus:border-blue-500 outline-none transition" placeholder="Misal: SDN 02 Cibinong" required>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Peringkat / Rangking</label>
+            <input type="number" id="input-ranking" min="1" class="w-full border-2 border-slate-200 rounded-xl p-3 focus:border-blue-500 outline-none transition" placeholder="Peringkat" required>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-4 px-4 rounded-xl transition shadow-md">
+          Ambil Nomor Antrian Sekarang
+        </button>
+      </form>
+    </div>
+
+    <!-- Tampilan Tiket Hasil Akhir -->
+    <div id="ticket-container" class="hidden bg-white border-4 border-emerald-500 p-6 md:p-8 rounded-2xl shadow-xl max-w-md mx-auto text-center relative overflow-hidden">
+      <div class="bg-amber-500 text-slate-900 font-black text-xs md:text-sm py-2 px-4 rounded-xl mb-6 border-2 border-amber-600 animate-pulse tracking-wide shadow-sm">
+        📸 WAJIB SCREENSHOT HALAMAN INI SEBAGAI BUKTI FISIK LOKET!
+      </div>
+      <h3 class="text-emerald-700 font-extrabold text-xl mt-2">TIKET ANTRIAN SAH</h3>
+      <p class="text-xs text-slate-500 font-mono mt-1" id="ticket-date-live"></p>
+      
+      <div class="my-6 bg-slate-50 p-4 rounded-xl border border-dashed border-slate-300">
+        <span class="text-xs font-bold text-slate-400 block tracking-widest uppercase" id="ticket-jalur-text">JALUR</span>
+        <span class="text-5xl font-black text-slate-900 block my-1" id="ticket-number">DOM-000</span>
+        <span class="text-xs font-mono text-emerald-600 font-bold tracking-wider" id="ticket-secure-code">CODE</span>
+      </div>
+
+      <div class="pt-2 text-left space-y-2.5 text-sm text-slate-700 border-t border-slate-100">
+        <p class="flex justify-between border-b pb-1"><strong>NISN:</strong> <span id="ticket-nisn" class="font-mono font-bold text-slate-900"></span></p>
+        <p class="flex justify-between border-b pb-1"><strong>Nama Siswa:</strong> <span id="ticket-nama" class="font-semibold text-slate-900"></span></p>
+        <p class="flex justify-between border-b pb-1"><strong>Jenis Kelamin:</strong> <span id="ticket-jk" class="font-bold text-slate-900"></span></p>
+        <p class="flex justify-between border-b pb-1"><strong>Asal Sekolah:</strong> <span id="ticket-asal" class="text-slate-900"></span></p>
+        <p class="flex justify-between"><strong>Peringkat:</strong> <span id="ticket-ranking" class="font-bold text-amber-600"></span></p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, runTransaction, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC0tYZ1fT-RuFafDjyhK5ilU2GTqt1TCDk",
+      authDomain: "daftar-ulang-part2.firebaseapp.com",
+      projectId: "daftar-ulang-part2",
+      storageBucket: "daftar-ulang-part2.firebasestorage.app",
+      messagingSenderId: "65550793854",
+      appId: "1:65550793854:web:77857ae896b5ba71706c2f",
+      measurementId: "G-6RNXJWQ5JB"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const namaJalurLengkap = { DOM: "Domisili", RAPORT: "Prestasi Rapor", AFIRMASI: "Afirmasi", KEJUARAAN: "Prestasi Kejuaraan", MUTASI: "Mutasi" };
+
+    document.getElementById("queue-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btnSubmit = document.getElementById("btn-submit");
+      btnSubmit.disabled = true; btnSubmit.innerText = "Mengunci Nomor Antrian...";
+
+      const jalur = document.getElementById("input-jalur").value;
+      const nisn = document.getElementById("input-nisn").value.trim();
+      const nama = document.getElementById("input-nama").value.trim();
+      const jk = document.getElementById("input-jk").value;
+      const asal = document.getElementById("input-asal").value.trim();
+      const ranking = parseInt(document.getElementById("input-ranking").value);
+
+      try {
+        const nomorAntrianDiterima = await runTransaction(db, async (transaction) => {
+          const counterRef = doc(db, "counters", jalur);
+          const counterDoc = await transaction.get(counterRef);
+          
+          let dataSekarang = { current: 0, quota: 999 };
+          if (counterDoc.exists()) {
+            dataSekarang = counterDoc.data();
+          }
+
+          // Validasi Kuota Penuh
+          if (dataSekarang.quota && dataSekarang.current >= dataSekarang.quota) {
+            throw `Maaf, kuota nomor antrian untuk Jalur ${namaJalurLengkap[jalur]} sudah penuh!`;
+          }
+
+          const nomorBaru = (dataSekarang.current || 0) + 1;
+          
+          // Tulis ulang/buat dokumen baru jika belum ada
+          transaction.set(counterRef, {
+            ...dataSekarang,
+            current: nomorBaru
+          }, { merge: true });
+
+          return nomorBaru;
+        });
+
+        const formatHariLokal = new Date().toLocaleDateString('sv-SE'); 
+        const randomString = Math.random().toString(36).substring(2, 6).toUpperCase();
+        const secureCode = `VAL-${jalur}-${formatHariLokal.replace(/-/g, '')}-${randomString}`;
+
+        await addDoc(collection(db, "pendaftar"), {
+          nisn, nama, jenisKelamin: jk, asalSekolah: asal, ranking, jalur, nomorUrut: nomorAntrianDiterima,
+          tanggalPendaftaran: serverTimestamp(), kodeKeamanan: secureCode, tanggalString: formatHariLokal
+        });
+
+        document.getElementById("form-container").classList.add("hidden");
+        document.getElementById("ticket-container").classList.remove("hidden");
+        
+        document.getElementById("ticket-date-live").innerText = "Waktu Cetak: " + new Date().toLocaleString('id-ID') + " WIB";
+        document.getElementById("ticket-secure-code").innerText = secureCode;
+        document.getElementById("ticket-jalur-text").innerText = "JALUR " + namaJalurLengkap[jalur].toUpperCase();
+        document.getElementById("ticket-number").innerText = `${jalur}-${String(nomorAntrianDiterima).padStart(3, '0')}`;
+        document.getElementById("ticket-nisn").innerText = nisn;
+        document.getElementById("ticket-nama").innerText = nama;
+        document.getElementById("ticket-jk").innerText = jk === "L" ? "Laki-laki (L)" : "Perempuan (P)";
+        document.getElementById("ticket-asal").innerText = asal;
+        document.getElementById("ticket-ranking").innerText = ranking;
+
+      } catch (error) {
+        alert("Terjadi Kendala: " + error); 
+        btnSubmit.disabled = false; 
+        btnSubmit.innerText = "Ambil Nomor Antrian Sekarang";
+      }
+    });
+  </script>
+</body>
+</html>
